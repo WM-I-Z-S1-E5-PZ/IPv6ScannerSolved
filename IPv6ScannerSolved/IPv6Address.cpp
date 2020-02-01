@@ -15,6 +15,17 @@ string IPv6Address::randomAddress()
 
 	}
 
-
+	wrRprt(randAddress);
 	return randAddress;
+}
+
+void IPv6Address::wrRprt(string tmpAddress)
+{
+	std::fstream myRprt;
+	myRprt.open("../Report/addresses.txt", std::fstream::in | std::fstream::out | std::fstream::app);
+	if (myRprt.is_open())
+	{
+		myRprt << tmpAddress << endl;
+	}
+	myRprt.close();
 }

@@ -1,7 +1,10 @@
 #pragma once
 #include <string>
 #include <bitset>
-using namespace std;
+#include <fstream>
+//using namespace std; // no God, damn nooooo!!!
+using std::string;
+using std::endl;
 
 class IPv6Address
 {
@@ -12,5 +15,6 @@ private:
 public:
 	string randAddress;
 	string randomAddress();
+	void wrRprt(string tmpAddress);
 };
 

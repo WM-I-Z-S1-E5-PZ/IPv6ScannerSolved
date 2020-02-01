@@ -3,12 +3,14 @@
 #define WIN32_LEAN_AND_MEAN
 
 // standart libraries
+// here i have to include both Windows.h and WinSock2.h in order to use:
 #include <Windows.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <iostream>
 #include <vector>
-#include <fstream>
+#include <ctime>
+//#include <fstream>
 #include "IPv6Address.h"
 
 // own classess
@@ -33,10 +35,13 @@ using std::endl;
 int myTestSolve(int iTmpResult, int myCnt);
 int mySolve(int iTmpResult, char* tmpAddr, WSADATA &tmpWsaData);
 void wrRprt(int bfSize, char* tmpAddr);
+void wrTimeRprt(int tmpTime);
 
 int main()
 {
     srand(time_t(NULL));
+    // calculate the execution time of program run
+    clock_t tStart = clock();
 	// Initializing WinSock2
 	WSADATA wsaData;
 	WORD mVersionRequested = MAKEWORD(2, 2);
@@ -108,7 +113,15 @@ int main()
         myTmpAddr[tmp.size()] = '\0';
         mySolve(iResult, myTmpAddr, wsaData);
     }
-
+    // get the time of the program end
+    int tEnd = (int)((clock() - tStart) / CLOCKS_PER_SEC);
+    wrTimeRprt(tEnd);
+    /*int rDay = 0, rHours = 0, rMin = 0, rSec = 0;
+    rDay = tEnd / 86400;
+    rHours = (tEnd - 86400 * rDay) / 3600;
+    rMin = (tEnd - 86400 * rDay - 3600 * rHours) / 60;
+    rSec = tEnd - 86400 * rDay - 3600 * rHours - 60 * rMin;
+    cout << "Program execution time is: " << rDay << " days.\n" << rHours << " hours.\n" << rMin << " min.\n" << rSec << " sec.\n\n"; */
 	return 0;
 }
 
@@ -366,13 +379,45 @@ int mySolve(int iTmpResult, char* tmpAddr, WSADATA& tmpWsaData)
     return 0;
 }
 
+// simple method to write data to the file
 void wrRprt(int bfSize, char* tmpAddr)
 {
+    // create file strem object
     std::fstream myRprt;
+    // open file at the disk with arguments to write, read and edit
     myRprt.open("../Report/report.txt", std::fstream::in | std::fstream::out | std::fstream::app);
+    // check is file open
     if (myRprt.is_open())
     {
+        // parse data to file
         myRprt << "Can be used to DDoS attacks:\t" << tmpAddr << endl;
     }
+    // close file
+    myRprt.close();
+}
+
+void wrTimeRprt(int tmpTime)
+{
+    int rDay = 0, rHours = 0, rMin = 0, rSec = 0;
+    rDay = tmpTime / 86400;
+    rHours = (tmpTime - 86400 * rDay) / 3600;
+    rMin = (tmpTime - 86400 * rDay - 3600 * rHours) / 60;
+    rSec = tmpTime - 86400 * rDay - 3600 * rHours - 60 * rMin;
+    cout << "Program execution time is: " << rDay << " days.\n" << rHours << " hours.\n" << rMin << " min.\n" << rSec << " sec.\n\n";
+    // create file strem object
+    std::fstream myRprt;
+    // open file at the disk with arguments to write, read and edit
+    myRprt.open("../Report/time.txt", std::fstream::in | std::fstream::out | std::fstream::app );
+    // check is file open
+    if (myRprt.is_open())
+    {
+        // parse data to file
+        myRprt << "Program execution time is(dd:hh:mm:ss):\n"
+            << rDay << ":"
+            << rHours << ":"
+            << rMin << ":"
+            << rSec << endl;
+    }
+    // close file
     myRprt.close();
 }
